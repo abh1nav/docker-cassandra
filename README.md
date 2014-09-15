@@ -14,6 +14,8 @@ OR, if you don't trust the one-liner, here are its contents:
   
 ```
 #!/bin/bash
+docker pull abh1nav/opscenter:latest
+docker pull abh1nav/cassandra:latest
 echo "Starting OpsCenter"
 docker run -d --name opscenter abh1nav/opscenter:latest
 sleep 10
