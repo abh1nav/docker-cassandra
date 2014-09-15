@@ -26,6 +26,8 @@ echo "Run \"nodetool --host $SEED_IP status\" to check the status of your cluste
 
 ```
 
+## Not-so-quick start
+
 ### Single Node
 Pull the image and launch the node.  
   
