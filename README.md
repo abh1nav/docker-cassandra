@@ -4,7 +4,7 @@ Cassandra 2.1.0 as a Docker container. For development use only.
 
 ### TL;DR
 
-Paste this into your terminal to start a 5 node cluster:  
+Paste this into your terminal to start a 5 node cluster with OpsCenter:  
 
 ```
 bash <(curl -sL http://bit.ly/docker-cassandra)
@@ -13,57 +13,110 @@ bash <(curl -sL http://bit.ly/docker-cassandra)
 OR, if you don't trust the one-liner, here are its contents:
   
 ```
-docker pull abh1nav/cassandra:latest
-docker run -d --name cass1 abh1nav/cassandra:latest
+#!/bin/bash
+echo "Starting OpsCenter"
+docker run -d --name opscenter abh1nav/opscenter:latest
+sleep 10
+OPS_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' opscenter)
+echo "Starting node cass1"
+docker run -d --name cass1 -e OPS_IP=$OPS_IP abh1nav/cassandra:latest
+sleep 30
 SEED_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' cass1)
 for name in cass{2..5}; do
   echo "Starting node $name"
-  docker run -d --name $name -e SEED=$SEED_IP abh1nav/cassandra:latest
-  echo "Waiting for $name to be up"
-  sleep 10
+  docker run -d --name $name -e SEED=$SEED_IP -e OPS_IP=$OPS_IP abh1nav/cassandra:latest
+  sleep 30
 done
-echo "Run \"nodetool --host $SEED_IP status\" to check the status of your cluster"
-
+echo "Registering cluster with OpsCenter"
+curl \
+  http://$OPS_IP:8888/cluster-configs \
+  -X POST \
+  -d \
+  "{
+      \"cassandra\": {
+        \"seed_hosts\": \"$SEED_IP\"
+      },
+      \"cassandra_metrics\": {},
+      \"jmx\": {
+        \"port\": \"7199\"
+      }
+  }" > /dev/null
+echo "Go to http://$OPS_IP:8888/"
 ```
 
-## Not-so-quick start
+## Manual Mode
 
-### Single Node
-Pull the image and launch the node.  
+### OpsCenter
+Skip this section if you don't want to run OpsCenter.
+
+Pull the image and launch OpsCenter.  
   
 ```
 docker pull abh1nav/cassandra:latest
+docker run -d --name opscenter abh1nav/opscenter:latest
+```
 
+Grab the OpsCenter IP:
+
+```
+OPS_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' opscenter)
+```
+
+### Single Node
+Pull the image and launch the node.
+
+```
+docker pull abh1nav/cassandra:latest
+```
+
+Without OpsCenter:
+```
 docker run -d --name cass1 abh1nav/cassandra:latest
 ```
+
+With OpsCenter:
+```
+docker run -d --name cass1 -e OPS_IP=$OPS_IP abh1nav/cassandra:latest
+```
   
-Grab the node's IP using:  
+Grab the seed node's IP using:  
   
 ```
-docker inspect -f '{{ .NetworkSettings.IPAddress }}' cass1
+SEED_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' cass1)
 ```
   
 Connect to it using CQLSH:  
   
 ```
-cqlsh <container ip>
+cqlsh $SEED_IP
 ```
   
 ### Multiple Nodes
   
-Follow the single node setup to get the first node running and keep track of its IP. Then:  
-  
+Follow the single node setup to get the first node running and keep track of its IP. Run the following to launch the other nodes in the cluster:
+
+Without OpsCenter:  
 ```
-SEED_IP="172.17.0.27" # This is cass1's IP
 for name in cass{2..5}; do
   echo "Starting node $name"
   docker run -d --name $name -e SEED=$SEED_IP abh1nav/cassandra:latest
-  sleep 10
+  sleep 30
+done
+```
+
+With OpsCenter:
+```
+for name in cass{2..5}; do
+  echo "Starting node $name"
+  docker run -d --name $name -e SEED=$SEED_IP -e OPS_IP=$OPS_IP abh1nav/cassandra:latest
+  sleep 30
 done
 ```
   
 Once all the nodes are up, check cluster status using:  
   
 ```
-nodetool --host <ip of node> status
+nodetool --host $SEED_IP status
 ```
+
+or, if you installed OpsCenter, go to `http://$OPS_IP:8888` and choose the "Add Existing Cluster option".

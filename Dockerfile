@@ -1,19 +1,43 @@
-FROM dockerfile/java:oracle-java7
+FROM phusion/baseimage:0.9.13
 
 MAINTAINER Abhinav Ajgaonkar <abhinav316@gmail.com>
 
+# Install Oracle Java 7
 RUN \
-	mkdir /opt/cassandra; \
-	wget -O - http://apache.mirror.gtcomm.net/cassandra/2.1.0/apache-cassandra-2.1.0-bin.tar.gz \
-	| tar xzf - --strip-components=1 -C "/opt/cassandra";
+  echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections; \
+  add-apt-repository -y ppa:webupd8team/java; \
+  apt-get update; \
+  apt-get install -y oracle-java7-installer python; \
+  rm -rf /var/lib/apt/lists/*
 
-ADD	.	/src
+# Download and extract Cassandra
+RUN \
+  mkdir /opt/cassandra; \
+  wget -O - http://apache.mirror.gtcomm.net/cassandra/2.1.0/apache-cassandra-2.1.0-bin.tar.gz \
+  | tar xzf - --strip-components=1 -C "/opt/cassandra";
 
+# Download and extract DataStax OpsCenter Agent
+RUN \
+  mkdir /opt/agent; \
+  wget -O - http://downloads.datastax.com/community/datastax-agent-5.0.0.tar.gz \
+  | tar xzf - --strip-components=1 -C "/opt/agent";
+
+ADD	. /src
+
+# Copy over daemons
 RUN	\
-	cp /src/cassandra.yaml /opt/cassandra/conf/
+	cp /src/cassandra.yaml /opt/cassandra/conf/; \
+    mkdir -p /etc/service/cassandra; \
+    cp /src/cassandra-run /etc/service/cassandra/run; \
+    mkdir -p /etc/service/agent; \
+    cp /src/agent-run /etc/service/agent/run
 
+# Expose ports
 EXPOSE 7199 7000 7001 9160 9042
 
-WORKDIR /src
+WORKDIR /opt/cassandra
 
-CMD	["./run.sh"]
+CMD ["/sbin/my_init"]
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
