@@ -1,30 +1,48 @@
-Cassandra 2.1.0 as a Docker container. For development use only.
+Cassandra 2.1.0 as a Docker container. For development use only.  
 
 ## Quickstart
 
+### TL;DR
+
+Paste this into your terminal to start a 5 node cluster:  
+
+```
+docker pull abh1nav/cassandra:latest
+docker run -d --name cass1 abh1nav/cassandra:latest
+SEED_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' cass1)
+for name in cass{2..5}; do
+  echo "Starting node $name"
+  docker run -d --name $name -e SEED=$SEED_IP abh1nav/cassandra:latest
+  echo "Waiting for $name to be up"
+  sleep 10
+done
+```
+
 ### Single Node
+Pull the image and launch the node.  
+  
 ```
 docker pull abh1nav/cassandra:latest
 
 docker run -d --name cass1 abh1nav/cassandra:latest
 ```
-
-Grab the node's IP using:
-
+  
+Grab the node's IP using:  
+  
 ```
 docker inspect -f '{{ .NetworkSettings.IPAddress }}' cass1
 ```
-
-Connect to it using CQLSH:
-
+  
+Connect to it using CQLSH:  
+  
 ```
 cqlsh <container ip>
 ```
-
+  
 ### Multiple Nodes
-
-Follow the single node setup to get the first node running and keep track of its IP. Then:
-
+  
+Follow the single node setup to get the first node running and keep track of its IP. Then:  
+  
 ```
 SEED_IP="172.17.0.27" # This is cass1's IP
 for name in cass{2..5}; do
@@ -33,9 +51,9 @@ for name in cass{2..5}; do
   sleep 10
 done
 ```
-
-Once all the nodes are up, check cluster status using:
-
+  
+Once all the nodes are up, check cluster status using:  
+  
 ```
 nodetool --host <ip of node> status
 ```
