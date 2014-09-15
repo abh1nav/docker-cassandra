@@ -16,4 +16,4 @@ EXPOSE 7199 7000 7001 9160 9042
 
 WORKDIR /src
 
-CMD	["run.sh"]
+CMD	["./run.sh"]
