@@ -7,6 +7,12 @@ Cassandra 2.1.0 as a Docker container. For development use only.
 Paste this into your terminal to start a 5 node cluster:  
 
 ```
+bash <(curl -sL http://bit.ly/docker-cassandra)
+```
+
+OR, if you don't trust the one-liner, here are its contents:
+  
+```
 docker pull abh1nav/cassandra:latest
 docker run -d --name cass1 abh1nav/cassandra:latest
 SEED_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' cass1)
