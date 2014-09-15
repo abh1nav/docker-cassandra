@@ -16,6 +16,8 @@ for name in cass{2..5}; do
   echo "Waiting for $name to be up"
   sleep 10
 done
+echo "Run \"nodetool --host $SEED_IP status\" to check the status of your cluster"
+
 ```
 
 ### Single Node
