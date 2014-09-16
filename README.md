@@ -98,6 +98,7 @@ cqlsh $SEED_IP
 Follow the single node setup to get the first node running and keep track of its IP. Run the following to launch the other nodes in the cluster:
 
 Without OpsCenter:  
+  
 ```
 for name in cass{2..5}; do
   echo "Starting node $name"
@@ -105,8 +106,9 @@ for name in cass{2..5}; do
   sleep 30
 done
 ```
-
-With OpsCenter:
+  
+With OpsCenter:  
+  
 ```
 for name in cass{2..5}; do
   echo "Starting node $name"
@@ -120,5 +122,5 @@ Once all the nodes are up, check cluster status using:
 ```
 nodetool --host $SEED_IP status
 ```
-
+  
 or, if you installed OpsCenter, go to `http://$OPS_IP:8888` and choose the "Add Existing Cluster option".
