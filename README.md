@@ -65,18 +65,20 @@ OPS_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' opscenter)
 ```
 
 ### Single Node
-Pull the image and launch the node.
-
+Pull the image.  
+  
 ```
 docker pull abh1nav/cassandra:latest
 ```
-
-Without OpsCenter:
+  
+Launch the node  
+  - without OpsCenter:  
+  
 ```
 docker run -d --name cass1 abh1nav/cassandra:latest
 ```
-
-With OpsCenter:
+  
+  - with OpsCenter:  
 ```
 docker run -d --name cass1 -e OPS_IP=$OPS_IP abh1nav/cassandra:latest
 ```
@@ -95,9 +97,8 @@ cqlsh $SEED_IP
   
 ### Multiple Nodes
   
-Follow the single node setup to get the first node running and keep track of its IP. Run the following to launch the other nodes in the cluster:
-
-Without OpsCenter:  
+Follow the single node setup to get the first node running and keep track of its IP. Run the following to launch the other nodes in the cluster:  
+  - without OpsCenter:  
   
 ```
 for name in cass{2..5}; do
@@ -107,7 +108,7 @@ for name in cass{2..5}; do
 done
 ```
   
-With OpsCenter:  
+  - with OpsCenter:  
   
 ```
 for name in cass{2..5}; do
