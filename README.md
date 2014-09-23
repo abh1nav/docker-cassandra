@@ -72,6 +72,7 @@ docker pull abh1nav/cassandra:latest
 ```
   
 Launch the node  
+  
   - without OpsCenter:  
   
 ```
@@ -79,6 +80,7 @@ docker run -d --name cass1 abh1nav/cassandra:latest
 ```
   
   - with OpsCenter:  
+  
 ```
 docker run -d --name cass1 -e OPS_IP=$OPS_IP abh1nav/cassandra:latest
 ```
