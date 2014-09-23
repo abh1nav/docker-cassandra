@@ -11,7 +11,9 @@ else
 		touch /root/.agentconfig
 	fi
 
-	# Start agent
+	# Wait 2 mins and start agent
+    echo "Sleeping 2min before starting agent"
+    sleep 30
 	cd /opt/agent
 	bin/datastax-agent -f
 fi
