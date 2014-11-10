@@ -1,4 +1,4 @@
-Cassandra 2.1.0 as a Docker container. For development use only.  
+Cassandra 2.1.2 as a Docker container. For development use only.  
 
 ## Quickstart
 
