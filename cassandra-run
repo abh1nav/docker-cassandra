@@ -19,7 +19,7 @@ if [ ! -f /root/.cassconfig ]; then
     # Add broadcast IPs
     echo "listen_address: $ADDR" >> $CONF_FILE
     echo "broadcast_rpc_address: $ADDR" >> $CONF_FILE
-    echo "rpc_address: $ADDR" >> $CONF_FILE
+    echo "rpc_address: 0.0.0.0" >> $CONF_FILE
     # Add seed info
     echo "seed_provider:" >> $CONF_FILE
     echo "  - class_name: org.apache.cassandra.locator.SimpleSeedProvider" >> $CONF_FILE
