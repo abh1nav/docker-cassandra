@@ -11,7 +11,7 @@ RUN \
 # Download and extract DataStax OpsCenter Agent
 RUN \
   mkdir /opt/agent; \
-  wget -O - http://downloads.datastax.com/community/datastax-agent-5.0.2.tar.gz \
+  wget -O - http://downloads.datastax.com/community/datastax-agent-5.1.0.tar.gz \
   | tar xzf - --strip-components=1 -C "/opt/agent";
 
 ADD	. /src
