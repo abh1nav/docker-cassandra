@@ -5,7 +5,7 @@ MAINTAINER Abhinav Ajgaonkar <abhinav316@gmail.com>
 # Download and extract Cassandra
 RUN \
   mkdir /opt/cassandra; \
-  wget -O - http://www.us.apache.org/dist/cassandra/2.1.14/apache-cassandra-2.1.14-bin.tar.gz \
+  wget -O - http://www.us.apache.org/dist/cassandra/2.1.5/apache-cassandra-2.1.5-bin.tar.gz \
   | tar xzf - --strip-components=1 -C "/opt/cassandra";
 
 # Download and extract DataStax OpsCenter Agent
