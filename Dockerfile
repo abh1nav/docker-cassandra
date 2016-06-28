@@ -29,6 +29,9 @@ RUN	\
 # Need python for cql
 RUN apt-get update && apt-get install -y python --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
+# Updated PATH env variable to add cassandra binaries
+ENV PATH $PATH:/opt/cassandra/bin
+
 # Expose ports
 EXPOSE 7199 7000 7001 9160 9042
 
