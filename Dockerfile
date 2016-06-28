@@ -1,5 +1,6 @@
 FROM abh1nav/java7
-MAINTAINER James Quacinella <james.quacinella@gmail.com>
+
+MAINTAINER Jorge Claro <jmc.claro@gmail.com>
 
 # Download and extract Cassandra
 RUN \
@@ -13,7 +14,9 @@ RUN \
   wget -O - http://downloads.datastax.com/community/datastax-agent-5.2.4.tar.gz \
   | tar xzf - --strip-components=1 -C "/opt/agent";
 
-ADD	. /src
+ADD . /src
+ADD ./backup.sh /
+RUN chmod 755 /backup.sh
 
 # Copy over daemons
 RUN	\
