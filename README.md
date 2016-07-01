@@ -1,4 +1,6 @@
-Cassandra 2.1.5 as a Docker container. For development use only.  
+NOTE: This is a personal fork, and the below comments refer to the orignal image for now
+
+Cassandra 2.2.6 as a Docker container. For development use only.  
 
 ## Quickstart
 
